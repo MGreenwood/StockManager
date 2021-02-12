@@ -1,0 +1,62 @@
+﻿@{
+    ViewData["Title"] = "Portfolio";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/site.css"/>
+}
+
+@using StockManager.Controllers
+
+<div>
+
+    @model List<HomeController.Security>
+
+    <h2>
+        User information for @ViewBag.name
+    </h2>
+    <table>
+        <tr>
+            <th>Symbol</th>
+            <th>Shares</th>
+            <th>Purchase Price</th>
+            <th>Current Price</th>
+            <th>Profit</th>
+        </tr>
+    @{
+        decimal net = 0.0M;
+        foreach (HomeController.Security security in Model)
+        {
+            <tr>
+                <td><a href="http://www.finance.yahoo.com/quote/@security.ticker" target="_blank"> @security.ticker </a></td>
+                <td>@security.numShares</td>
+                <td>$@string.Format("{0:0.00}",security.purchasePrice)</td>
+                <td>$@string.Format("{0:0.00}",security.currentPrice)</td>
+                @{ 
+                    decimal val = (security.currentPrice - security.purchasePrice) * security.numShares;
+                }
+                <td>$@string.Format("{0:0.00}",val)</td>
+                @{
+                    net += val;
+                    }
+            </tr>
+        }
+
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>NET</td>
+            <td>$@string.Format("{0:0.00}",net)</td>
+        </tr>
+
+    }
+    </table>
+
+    <!-- If db empty -->
+    @if (Model.Count() == 0)
+    {
+        <p>Nothing to show</p>
+    }
+</div>
+
